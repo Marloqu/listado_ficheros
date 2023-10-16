@@ -1,37 +1,56 @@
 # Script for listing files and subfolders.
-# Generates a txt file as output.
+# Generates a TXT or XLSX file as output.
 # Uses arguments from terminal command line.
 
 import argparse
 import os
+import openpyxl
 
 # Definition of argparse object
 
 parser = argparse.ArgumentParser(
-    prog = "listado_ficheros_a_txt.py",
-    description = "Lists files and subfolders in a txt output file",
+    prog = "listado_ficheros.py",
+    description = "Lists files and subfolders from a folder into a .txt or .xlsx output file",
     epilog = "Texto al final de la ayuda"
     )
+group = parser.add_mutually_exclusive_group()
 parser.add_argument("input_folder", help = "Folder (and path) to be listed")
 parser.add_argument("output_file", help = "Filename to be written")
+group.add_argument("-txt", "--txt", help = "txt file type", action = "store_true")
+group.add_argument("-xlsx", "--xlsx", help = "xlsx file type", action = "store_true")
 args = parser.parse_args()
 
 # Generates the output file
-output_txt_filename = args.output_file + ".txt"
-output_txt_file = open(r"{}".format(output_txt_filename), "w")
-print("Generating file.")
-for folder_name, subfolders, filenames in os.walk(args.input_folder):
-    output_txt_file.write(folder_name + "\n")
-    for subfolder in subfolders:
-        output_txt_file.write(subfolder + "\n")
-    for filename in filenames:
-        output_txt_file.write(filename + "\n")
-    output_txt_file.write("\n")
-print("Done.")
-print(f"List saved in file \"{output_txt_filename}\" in folder \"{os.getcwd()}\"")
+
+if args.txt:
+    output_filename = args.output_file + ".txt"
+    output_file_object = open(r"{}".format(output_filename), "w")
+    print("Generating file.")
+    for folder_name, subfolders, filenames in os.walk(args.input_folder):
+        output_file_object.write(folder_name + "\n")
+        for subfolder in subfolders:
+            output_file_object.write(subfolder + "\n")
+        for filename in filenames:
+            output_file_object.write(filename + "\n")
+        output_file_object.write("\n")
+    print("Done.")
+    print(f"List saved in file \"{output_filename}\" in folder \"{os.getcwd()}\"")
+else:
+    output_filename = args.output_file + ".xlsx"
+    output_file_object = open(r"{}".format(output_filename), "w")
+    print("Generating file.")
+    for folder_name, subfolders, filenames in os.walk(args.input_folder):
+        output_file_object.write(folder_name + "\n")
+        for subfolder in subfolders:
+            output_file_object.write(subfolder + "\n")
+        for filename in filenames:
+            output_file_object.write(filename + "\n")
+        output_file_object.write("\n")
+    print("Done.")
+    print(f"List saved in file \"{output_filename}\" in folder \"{os.getcwd()}\"")    
 
 # Closes the written file
-output_txt_file.close()
+output_file_object.close()
 
 
 
@@ -64,20 +83,20 @@ output_txt_file.close()
 #         break
 
 # # Generates the output file once everything is valid
-# output_txt_file = open("output_txt_file.txt", "w")
+# output_file_object = open("output_file_object.txt", "w")
 # print("Generating file.")
 # for folder_name, subfolders, filenames in os.walk(r"{}".format(matched_path)):
-#     output_txt_file.write(folder_name + "\n")
+#     output_file_object.write(folder_name + "\n")
 #     for subfolder in subfolders:
-#         output_txt_file.write(subfolder + "\n")
+#         output_file_object.write(subfolder + "\n")
 #     for filename in filenames:
-#         output_txt_file.write(filename + "\n")
-#     output_txt_file.write("\n")
+#         output_file_object.write(filename + "\n")
+#     output_file_object.write("\n")
 # print("Done.")
-# print(f"List saved in file \"output_txt_file.txt\" in folder \"{os.getcwd()}\"")
+# print(f"List saved in file \"output_file_object.txt\" in folder \"{os.getcwd()}\"")
 
 # # Closes the written file
-# output_txt_file.close()
+# output_file_object.close()
 
 
 
