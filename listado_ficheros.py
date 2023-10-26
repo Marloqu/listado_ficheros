@@ -10,19 +10,21 @@ import openpyxl
 
 parser = argparse.ArgumentParser(
     prog = "listado_ficheros.py",
-    description = "Lists files and subfolders from a folder into a .txt or .xlsx output file",
-    epilog = "Texto al final de la ayuda"
+    description = "Lists files and subfolders from a folder into a .txt or .xlsx output file"
     )
 group = parser.add_mutually_exclusive_group()
 parser.add_argument("input_folder", help = "Folder (and path) to be listed")
-parser.add_argument("output_file", help = "Filename to be written")
-group.add_argument("-txt", "--txt", help = "txt file type", action = "store_true")
-group.add_argument("-xlsx", "--xlsx", help = "xlsx file type", action = "store_true")
+parser.add_argument("output_file", help = "Filename to be written [no extension needed]")
+group.add_argument("-t", "--txt", help = ".txt file type", action = "store_true")
+group.add_argument("-x", "--xlsx", help = ".xlsx file type", action = "store_true")
 args = parser.parse_args()
 
 # Generates the output file
 
-if args.txt:
+# text file type (True)
+# xlsx file type (False)
+
+if args.t:
     output_filename = args.output_file + ".txt"
     output_file_object = open(r"{}".format(output_filename), "w")
     print("Generating file.")
@@ -34,11 +36,17 @@ if args.txt:
             output_file_object.write(filename + "\n")
         output_file_object.write("\n")
     print("Done.")
-    print(f"List saved in file \"{output_filename}\" in folder \"{os.getcwd()}\"")
+    print(f"Filenames list saved in file \"{output_filename}\" in folder \"{os.getcwd()}\"")
 else:
     output_filename = args.output_file + ".xlsx"
-    output_file_object = open(r"{}".format(output_filename), "w")
+    output_file_object = openpyxl.Workbook()
+    sheet = output_file_object.active
     print("Generating file.")
+
+
+    for row in output_file_object.__iter__():
+
+
     for folder_name, subfolders, filenames in os.walk(args.input_folder):
         output_file_object.write(folder_name + "\n")
         for subfolder in subfolders:
@@ -47,7 +55,10 @@ else:
             output_file_object.write(filename + "\n")
         output_file_object.write("\n")
     print("Done.")
-    print(f"List saved in file \"{output_filename}\" in folder \"{os.getcwd()}\"")    
+    print(f"Filenames list saved in file \"{output_filename}\" in folder \"{os.getcwd()}\"")    
+
+
+    output_file_object.save(r"{}".format(output_filename))
 
 # Closes the written file
 output_file_object.close()
